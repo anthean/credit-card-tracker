@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chase Card Rewards Tracker</title>
+  <style>
+    :root {
+      --bg: #f5f5f7;
+      --surface: #ffffff;
+      --text: #1d1d1f;
+      --text-secondary: #6e6e73;
+      --accent: #004977;
+      --accent-light: #e8f0f7;
+      --border: #d2d2d7;
+      --bonus-bg: #fff8e1;
+      --bonus-border: #ffcc02;
+      --green: #248a3d;
+      --green-bg: #e8f7ed;
+      --red: #d93025;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .updated {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .card-header {
+      background: var(--accent);
+      color: white;
+      padding: 20px 24px;
+    }
+
+    .card-header h2 {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .card-header .fee {
+      font-size: 13px;
+      opacity: 0.85;
+      margin-top: 2px;
+    }
+
+    .card-body {
+      padding: 20px 24px;
+    }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+    }
+
+    .category-list {
+      list-style: none;
+      margin-bottom: 20px;
+    }
+
+    .category-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .category-item:last-child {
+      border-bottom: none;
+    }
+
+    .category-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .category-icon {
+      font-size: 18px;
+      width: 28px;
+      text-align: center;
+    }
+
+    .category-name {
+      font-size: 14px;
+    }
+
+    .multiplier {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 2px 10px;
+      border-radius: 12px;
+    }
+
+    .multiplier.high {
+      color: var(--green);
+      background: var(--green-bg);
+    }
+
+    .bonuses {
+      margin-top: 4px;
+    }
+
+    .bonus-item {
+      background: var(--bonus-bg);
+      border-left: 3px solid var(--bonus-border);
+      border-radius: 0 8px 8px 0;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+    }
+
+    .bonus-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .bonus-title {
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .bonus-title .active-badge {
+      font-size: 10px;
+      background: var(--green);
+      color: white;
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-weight: 500;
+    }
+
+    .bonus-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+    }
+
+    .bonus-expiry {
+      font-size: 11px;
+      color: var(--red);
+      margin-top: 3px;
+    }
+
+    .legend {
+      margin-top: 32px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .legend span {
+      margin: 0 8px;
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 16px; }
+      .cards-grid { grid-template-columns: 1fr; }
+      header h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Chase Card Rewards Tracker</h1>
+    <p class="updated" id="updated"></p>
+  </header>
+  <div class="cards-grid" id="cards-grid"></div>
+  <div class="legend">
+    <span>🟢 Active Perk</span>
+    <span>🟡 Bonus / Promo</span>
+    <span>Updated quarterly or as Chase announces changes</span>
+  </div>
+
+  <script>
+    function isHighMultiplier(m) {
+      const num = parseFloat(m);
+      return num >= 3;
+    }
+
+    function formatExpiry(dateStr) {
+      if (!dateStr) return null;
+      const d = new Date(dateStr + 'T00:00:00');
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function renderCard(card) {
+      const el = document.createElement('div');
+      el.className = 'card';
+
+      const feeText = card.annualFee === 0
+        ? 'No annual fee'
+        : `$${card.annualFee}/year`;
+
+      let categoriesHTML = '';
+      for (const cat of card.categories) {
+        const highClass = isHighMultiplier(cat.multiplier) ? ' high' : '';
+        categoriesHTML += `
+          <li class="category-item">
+            <div class="category-left">
+              <span class="category-icon">${cat.icon}</span>
+              <span class="category-name">${cat.name}</span>
+            </div>
+            <span class="multiplier${highClass}">${cat.multiplier}</span>
+          </li>`;
+      }
+
+      let bonusesHTML = '';
+      for (const bonus of card.bonuses) {
+        const expiryHTML = bonus.expires
+          ? `<div class="bonus-expiry">Expires ${formatExpiry(bonus.expires)}</div>`
+          : '';
+        bonusesHTML += `
+          <div class="bonus-item">
+            <div class="bonus-title">
+              ${bonus.title}
+              ${bonus.active ? '<span class="active-badge">ACTIVE</span>' : ''}
+            </div>
+            <div class="bonus-desc">${bonus.description}</div>
+            ${expiryHTML}
+          </div>`;
+      }
+
+      el.innerHTML = `
+        <div class="card-header">
+          <h2>${card.name}</h2>
+          <div class="fee">${feeText} · Base: ${card.baseReward}</div>
+        </div>
+        <div class="card-body">
+          <div class="section-label">Earning Categories</div>
+          <ul class="category-list">${categoriesHTML}</ul>
+          <div class="section-label">Active Perks & Bonuses</div>
+          <div class="bonuses">${bonusesHTML}</div>
+        </div>`;
+
+      return el;
+    }
+
+    const data = {
+      lastUpdated: "2026-10-06",
+      cards: [
+        {
+          id: "sapphire-preferred",
+          name: "Chase Sapphire Preferred",
+          annualFee: 95,
+          baseReward: "1x per $1",
+          categories: [
+            { name: "Travel via Chase Travel", multiplier: "5x", icon: "✈️" },
+            { name: "Dining", multiplier: "3x", icon: "🍽️" },
+            { name: "Online Grocery", multiplier: "3x", icon: "🛒" },
+            { name: "Select Streaming", multiplier: "3x", icon: "📺" },
+            { name: "Other Travel", multiplier: "2x", icon: "🧳" },
+            { name: "Everything Else", multiplier: "1x", icon: "💳" }
+          ],
+          bonuses: [
+            { title: "Pay Yourself Back", description: "Redeem points at 1.25 cents each for dining, groceries, home improvement, and select charity purchases", active: true, expires: null },
+            { title: "DoorDash DashPass", description: "Complimentary DashPass subscription (free delivery on DoorDash)", active: true, expires: "2027-12-31" },
+            { title: "Instacart+", description: "Complimentary Instacart+ membership", active: true, expires: "2027-09-30" },
+            { title: "Transfer Bonus", description: "Points transfer 1:1 to airline/hotel partners — watch for periodic 25-50% transfer bonuses to select partners", active: true, expires: null },
+            { title: "10% Anniversary Bonus", description: "Earn 10% more points on your account anniversary based on total spending that year", active: true, expires: null }
+          ]
+        },
+        {
+          id: "sapphire-reserve",
+          name: "Chase Sapphire Reserve",
+          annualFee: 550,
+          baseReward: "1x per $1",
+          categories: [
+            { name: "Hotels & Car Rentals via Chase Travel", multiplier: "10x", icon: "🏨" },
+            { name: "Flights via Chase Travel", multiplier: "5x", icon: "✈️" },
+            { name: "Other Travel via Chase Travel", multiplier: "5x", icon: "🧳" },
+            { name: "Dining", multiplier: "3x", icon: "🍽️" },
+            { name: "Select Streaming", multiplier: "3x", icon: "📺" },
+            { name: "Other Travel", multiplier: "3x", icon: "🌍" },
+            { name: "Everything Else", multiplier: "1x", icon: "💳" }
+          ],
+          bonuses: [
+            { title: "$300 Travel Credit", description: "Annual $300 statement credit for travel purchases (resets each cardmember year)", active: true, expires: null },
+            { title: "Pay Yourself Back", description: "Redeem points at 1.5 cents each for dining, groceries, home improvement, and select charity purchases", active: true, expires: null },
+            { title: "Priority Pass Lounge Access", description: "Complimentary Priority Pass Select membership for airport lounges worldwide", active: true, expires: null },
+            { title: "DoorDash DashPass", description: "Complimentary DashPass subscription (free delivery on DoorDash)", active: true, expires: "2027-12-31" },
+            { title: "Instacart+", description: "Complimentary Instacart+ membership", active: true, expires: "2027-09-30" },
+            { title: "Lyft Pink", description: "Complimentary Lyft Pink All Access membership", active: true, expires: null },
+            { title: "Transfer Bonus", description: "Points transfer 1:1 to airline/hotel partners — watch for periodic 25-50% transfer bonuses to select partners", active: true, expires: null },
+            { title: "TSA PreCheck / Global Entry Credit", description: "Statement credit for TSA PreCheck or Global Entry application fee every 4 years", active: true, expires: null }
+          ]
+        },
+        {
+          id: "freedom-unlimited",
+          name: "Chase Freedom Unlimited",
+          annualFee: 0,
+          baseReward: "1.5% cash back",
+          categories: [
+            { name: "Travel via Chase Travel", multiplier: "5%", icon: "✈️" },
+            { name: "Dining", multiplier: "3%", icon: "🍽️" },
+            { name: "Drugstores", multiplier: "3%", icon: "💊" },
+            { name: "Everything Else", multiplier: "1.5%", icon: "💳" }
+          ],
+          bonuses: [
+            { title: "New Cardmember Bonus", description: "Extra 1.5% cash back on all purchases in the first year (stacks to 3% base, 6.5% dining, etc.)", active: true, expires: null },
+            { title: "Chase Offers", description: "Personalized merchant-specific cashback offers — check the Chase app regularly to activate", active: true, expires: null },
+            { title: "Pair with Sapphire", description: "When paired with Sapphire Preferred/Reserve, cash back converts to Ultimate Rewards points at 1:1 and gains transfer partner access", active: true, expires: null }
+          ]
+        }
+      ]
+    };
+
+    document.getElementById('updated').textContent =
+      `Last updated: ${new Date(data.lastUpdated).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
+
+    const grid = document.getElementById('cards-grid');
+    for (const card of data.cards) {
+      grid.appendChild(renderCard(card));
+    }
+  </script>
+</body>
+</html>

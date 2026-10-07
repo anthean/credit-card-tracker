@@ -1,0 +1,149 @@
+{
+  "lastUpdated": "2026-10-06",
+  "cards": [
+    {
+      "id": "sapphire-preferred",
+      "name": "Chase Sapphire Preferred",
+      "image": null,
+      "annualFee": 95,
+      "baseReward": "1x per $1",
+      "categories": [
+        { "name": "Travel via Chase Travel", "multiplier": "5x", "icon": "✈️" },
+        { "name": "Dining", "multiplier": "3x", "icon": "🍽️" },
+        { "name": "Online Grocery", "multiplier": "3x", "icon": "🛒" },
+        { "name": "Select Streaming", "multiplier": "3x", "icon": "📺" },
+        { "name": "Other Travel", "multiplier": "2x", "icon": "🧳" },
+        { "name": "Everything Else", "multiplier": "1x", "icon": "💳" }
+      ],
+      "bonuses": [
+        {
+          "title": "Pay Yourself Back",
+          "description": "Redeem points at 1.25 cents each for dining, groceries, home improvement, and select charity purchases",
+          "active": true,
+          "expires": null
+        },
+        {
+          "title": "DoorDash DashPass",
+          "description": "Complimentary DashPass subscription (free delivery on DoorDash)",
+          "active": true,
+          "expires": "2027-12-31"
+        },
+        {
+          "title": "Instacart+",
+          "description": "Complimentary Instacart+ membership",
+          "active": true,
+          "expires": "2027-09-30"
+        },
+        {
+          "title": "Transfer Bonus",
+          "description": "Points transfer 1:1 to airline/hotel partners — watch for periodic 25-50% transfer bonuses to select partners",
+          "active": true,
+          "expires": null
+        },
+        {
+          "title": "10% Anniversary Bonus",
+          "description": "Earn 10% more points on your account anniversary based on total spending that year",
+          "active": true,
+          "expires": null
+        }
+      ]
+    },
+    {
+      "id": "sapphire-reserve",
+      "name": "Chase Sapphire Reserve",
+      "annualFee": 550,
+      "baseReward": "1x per $1",
+      "categories": [
+        { "name": "Hotels & Car Rentals via Chase Travel", "multiplier": "10x", "icon": "🏨" },
+        { "name": "Flights via Chase Travel", "multiplier": "5x", "icon": "✈️" },
+        { "name": "Other Travel via Chase Travel", "multiplier": "5x", "icon": "🧳" },
+        { "name": "Dining", "multiplier": "3x", "icon": "🍽️" },
+        { "name": "Select Streaming", "multiplier": "3x", "icon": "📺" },
+        { "name": "Other Travel", "multiplier": "3x", "icon": "🌍" },
+        { "name": "Everything Else", "multiplier": "1x", "icon": "💳" }
+      ],
+      "bonuses": [
+        {
+          "title": "$300 Travel Credit",
+          "description": "Annual $300 statement credit for travel purchases (resets each cardmember year)",
+          "active": true,
+          "expires": null
+        },
+        {
+          "title": "Pay Yourself Back",
+          "description": "Redeem points at 1.5 cents each for dining, groceries, home improvement, and select charity purchases",
+          "active": true,
+          "expires": null
+        },
+        {
+          "title": "Priority Pass Lounge Access",
+          "description": "Complimentary Priority Pass Select membership for airport lounges worldwide",
+          "active": true,
+          "expires": null
+        },
+        {
+          "title": "DoorDash DashPass",
+          "description": "Complimentary DashPass subscription (free delivery on DoorDash)",
+          "active": true,
+          "expires": "2027-12-31"
+        },
+        {
+          "title": "Instacart+",
+          "description": "Complimentary Instacart+ membership",
+          "active": true,
+          "expires": "2027-09-30"
+        },
+        {
+          "title": "Lyft Pink",
+          "description": "Complimentary Lyft Pink All Access membership",
+          "active": true,
+          "expires": null
+        },
+        {
+          "title": "Transfer Bonus",
+          "description": "Points transfer 1:1 to airline/hotel partners — watch for periodic 25-50% transfer bonuses to select partners",
+          "active": true,
+          "expires": null
+        },
+        {
+          "title": "TSA PreCheck / Global Entry Credit",
+          "description": "Statement credit for TSA PreCheck or Global Entry application fee every 4 years",
+          "active": true,
+          "expires": null
+        }
+      ]
+    },
+    {
+      "id": "freedom-unlimited",
+      "name": "Chase Freedom Unlimited",
+      "annualFee": 0,
+      "baseReward": "1.5% cash back",
+      "categories": [
+        { "name": "Travel via Chase Travel", "multiplier": "5%", "icon": "✈️" },
+        { "name": "Dining", "multiplier": "3%", "icon": "🍽️" },
+        { "name": "Drugstores", "multiplier": "3%", "icon": "💊" },
+        { "name": "Everything Else", "multiplier": "1.5%", "icon": "💳" }
+      ],
+      "bonuses": [
+        {
+          "title": "New Cardmember Bonus",
+          "description": "Extra 1.5% cash back on all purchases in the first year (stacks to 3% base, 6.5% dining, etc.)",
+          "active": true,
+          "expires": null
+        },
+        {
+          "title": "Chase Offers",
+          "description": "Personalized merchant-specific cashback offers — check the Chase app regularly to activate",
+          "active": true,
+          "expires": null
+        },
+        {
+          "title": "Pair with Sapphire",
+          "description": "When paired with Sapphire Preferred/Reserve, cash back converts to Ultimate Rewards points at 1:1 and gains transfer partner access",
+          "active": true,
+          "expires": null
+        }
+      ]
+    }
+  ]
+}
